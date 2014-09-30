@@ -88,7 +88,7 @@ if __name__ == "__main__":
         printToFile(results,sys.argv[3])
     else:
         for i in results:
-            print i
+            print (i)
 
 
 
