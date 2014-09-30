@@ -11,16 +11,20 @@ def getDictionariesNeededForRhyming(wordToPro=None):
 			for pr in value:
 				pronunciation=pr[:]
 				pronunciation.reverse()
+				pronunciation=tuple(pronunciation)
 				p=getUntilStressed(pronunciation)
+				#if p==pronunciation: #skip the base cases because those don't count as rhymes
+				#	pass
+				#belief and leaf??
 				if p in rhymeToPro and rhymeToPro[p] is not None: 
-					rhymeToPro[p].add(tuple(pronunciation))
+					rhymeToPro[p].add(pronunciation)
 				else:
-					rhymeToPro[p]={tuple(pronunciation)}
+					rhymeToPro[p]={pronunciation}
 
-				if tuple(pronunciation) in pronunciationToWord and pronunciationToWord[tuple(pronunciation)] is not None:
-					pronunciationToWord[tuple(pronunciation)].append(key)
+				if pronunciation in pronunciationToWord and pronunciationToWord[pronunciation] is not None:
+					pronunciationToWord[pronunciation].append(key)
 				else:
-					pronunciationToWord[tuple(pronunciation)]=[key]
+					pronunciationToWord[pronunciation]=[key]
 	return rhymeToPro,pronunciationToWord;
 
 def getUntilStressed(phonemes):
@@ -38,6 +42,6 @@ def printRhymingWords(word,wordToPros,proToWords,rhymeToPros):
 		rPro=pro[:]
 		rPro.reverse()
 		rhymeGroup=getUntilStressed(rPro)
-		print('rhyme group'+str(rhymeGroup))
+		print('rhyme group'+str(rhymeGroup[::-1]))
 		for v in rhymeToPros[rhymeGroup]:
 			print('  '+str(proToWords[v]))
