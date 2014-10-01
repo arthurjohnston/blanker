@@ -35,7 +35,8 @@ def getUntilStressed(phonemes):
 			break;
 	return tuple(result);
 
-def printRhymingWords(word,wordToPros,proToWords,rhymeToPros):
+
+def printRhymingWords(word,wordToPros,proToWords,rhymeToPros,identity=True):
 	print('The word is '+word)
 	pros=wordToPros[word]
 	for pro in pros:
@@ -43,5 +44,6 @@ def printRhymingWords(word,wordToPros,proToWords,rhymeToPros):
 		rPro.reverse()
 		rhymeGroup=getUntilStressed(rPro)
 		print('rhyme group'+str(rhymeGroup[::-1]))
-		for v in rhymeToPros[rhymeGroup]:
-			print('  '+str(proToWords[v]))
+		for pro in rhymeToPros[rhymeGroup]:
+
+			print('  '+str(proToWords[pro]))
