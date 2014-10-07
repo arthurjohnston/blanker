@@ -6,7 +6,7 @@ from nltk.corpus import cmudict
 #cmu=cmudict.dict()
 #rhymeToPro,pronunciationToWord=rhyme.getDictionariesNeededForRhyming(cmu)
 #realRhymes=dict((k,v) for k,v in rhymesToPro.items() if len(v)>1)
-
+#rgs=[rhyme.rhymeGroup(r,realRhymes,pronunciationToWords) for r in realRhymes]
 def getDictionariesNeededForRhyming(wordToPro=None):
 	if wordToPro is None:
 		wordToPro=cmudict.dict();
@@ -55,17 +55,15 @@ def printRhymingWords(word,wordToPros,proToWords,rhymeToPros,identity=True):
 			else:
 				print('identity words '+str(proToWords[pro]))
 
+#Next step run this on everyone
 class rhymeGroup:
 	def __init__(self,rhyme,rhymeToPros,proToWords):
 		self.rhyme=rhyme
 		self.proToWords=dict()
 		for pro in rhymeToPros[rhyme]:
 			self.proToWords[pro]=proToWords[pro]
-	def __init__(self,rhyme,pronunciations,proToWords):
-		self.rhyme=rhyme
-		self.proToWords=dict()
-		for pro in pronunciations:
-			self.proToWords[pro]=proToWords[pro]
 		self.words=set([w for words in list(self.proToWords.values()) for w in words])
 	def HasOneWord(self):
-		return len(self.words)==1 
+		return len(self.words)==1
+	def HasOnePronunciation(self):
+	 	return len(self.proToWords.keys())==1
