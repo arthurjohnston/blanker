@@ -4,9 +4,10 @@ from nltk.corpus import cmudict
 #rhyme=imp.load_source('rhyme','C:/Sites/blanker/word/her/rhyme.py')
 #from nltk.corpus import cmudict
 #cmu=cmudict.dict()
-#rhymeToPro,pronunciationToWord=rhyme.getDictionariesNeededForRhyming(cmu)
-#realRhymes=dict((k,v) for k,v in rhymesToPro.items() if len(v)>1)
+#rhymeToPro,pronunciationToWords=rhyme.getDictionariesNeededForRhyming(cmu)
+#realRhymes=dict((k,v) for k,v in rhymeToPro.items() if len(v)>1)
 #rgs=[rhyme.rhymeGroup(r,realRhymes,pronunciationToWords) for r in realRhymes]
+#len([g for g in rgs if g.HasOneWord()==True])
 def getDictionariesNeededForRhyming(wordToPro=None):
 	if wordToPro is None:
 		wordToPro=cmudict.dict();
@@ -67,3 +68,5 @@ class rhymeGroup:
 		return len(self.words)==1
 	def HasOnePronunciation(self):
 	 	return len(self.proToWords.keys())==1
+	def __str__(self):
+		return "rhyme:"+str(self.rhyme)+"\npronunciations"+str(self.proToWords.keys())+"\nwords"+str(self.words)
