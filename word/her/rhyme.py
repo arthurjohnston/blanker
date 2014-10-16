@@ -1,5 +1,4 @@
 from nltk.corpus import cmudict
-#pro is pronunciation
 #import imp
 #rhyme=imp.load_source('rhyme','C:/Sites/blanker/word/her/rhyme.py')
 #from nltk.corpus import cmudict
@@ -7,7 +6,7 @@ from nltk.corpus import cmudict
 #rhymeToPro,pronunciationToWords=rhyme.getDictionariesNeededForRhyming(cmu)
 #realRhymes=dict((k,v) for k,v in rhymeToPro.items() if len(v)>1)
 #rgs=[rhyme.rhymeGroup(r,realRhymes,pronunciationToWords) for r in realRhymes]
-#len([g for g in rgs if g.HasOneWord()==True])
+#len([g for g in rgs if g.HasOneWord()==False])
 def getDictionariesNeededForRhyming(wordToPro=None):
 	if wordToPro is None:
 		wordToPro=cmudict.dict();
@@ -56,7 +55,6 @@ def printRhymingWords(word,wordToPros,proToWords,rhymeToPros,identity=True):
 			else:
 				print('identity words '+str(proToWords[pro]))
 
-#Next step run this on everyone
 class rhymeGroup:
 	def __init__(self,rhyme,rhymeToPros,proToWords):
 		self.rhyme=rhyme
@@ -68,5 +66,12 @@ class rhymeGroup:
 		return len(self.words)==1
 	def HasOnePronunciation(self):
 	 	return len(self.proToWords.keys())==1
+	def StartsWith(self,shorter,longer):
+		for i in range(shorter):
+			if(shorter[i]!=longer[i]):
+				return False;
+		return True;
 	def __str__(self):
-		return "rhyme:"+str(self.rhyme)+"\npronunciations"+str(self.proToWords.keys())+"\nwords"+str(self.words)
+		return "rhyme:"+str(self.rhyme)+"\npronunciations:"+str(self.proToWords.keys())+"\nwords:"+str(self.words)
+#http://www.cs.colorado.edu/~jbg/
+#http://www.ling.upenn.edu/phonetics/p2tk/
