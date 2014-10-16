@@ -53,7 +53,7 @@ English = {
 	'HH Y', 'V Y', 'TH Y', 'M Y', 'S P Y', 'S K Y', 'G Y', 'HH W', '']
 	}
 
-def loadLanguage(filename) :
+def loadLanguage(filename) :	
 	'''This function loads up a language configuration file and returns
 	the configuration to be passed to the syllabify function.'''
 
@@ -78,12 +78,12 @@ def loadLanguage(filename) :
 			
 	return L
 
-def syllabify(language, word) :
+def syllabify(word) :
 	'''Syllabifies the word, given a language configuration loaded with loadLanguage.
 	   word is either a string of phonemes from the CMU pronouncing dictionary set
 	   (with optional stress numbers after vowels), or a Python list of phonemes,
 	   e.g. "B AE1 T" or ["B", "AE1", "T"]'''
-	   
+	language=English;   #simplification since we're only doing english
 	if type(word) == str :
 		word = word.split()
 		
