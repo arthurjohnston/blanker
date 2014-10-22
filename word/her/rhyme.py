@@ -42,30 +42,7 @@ def getUntilStressed(phonemes):
 			break;
 	return tuple(result);
 
-#using the function means 'maternity', 'fraternity', 'paternity'
-#won't count as a rhyme 
-def sameLastStressed(sy1,sy2):
-	'''Checks if the last stressed syllable is the same in 2 syllabifications'''
-	return next(x for x in sy2[::-1] if x[0]==1)==next(y for y in sy1[::-1] if y[0]==1)
 
-def pairwise(iterable):#python website on iterables
-    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
-def groupHasAtLeastOneDifference(rg):
-	return any(SyllabificationsRhyme(pw[0],pw[1])for pw in pairwise(rg.proToSyllables.values()))
-def SyllabificationsRhyme(syllable1,syllable2): #assumes it's in the same rhymegroup
-	seenStressed=False
-	for s1,s2 in zip(syllable1[::-1],syllable2[::-1]):
-		if(s1[0]==1):#if it is the stressed
-			seenStressed=True
-			if s1[1]!=s2[1]:
-				return True;
-		if(seenStressed):
-			if s1[1]!=s2[1] and s1[2]==s2[2] and s1[3]==s2[3]:
-				return True;
-	return False
 def tsr1():
 	s1=[(0, ['F', 'R'], ['AH'], []), (1, ['T'], ['ER'], []), (0, ['N'], ['IH'], []), (0, ['T'], ['IY'], [])]
 	s2=[(0, ['P'], ['AH'], []), (1, ['T'], ['ER'], []), (0, ['N'], ['IH'], []), (0, ['T'], ['IY'], [])]
@@ -74,12 +51,11 @@ def tsr2():
 	s1=[(1, ['M'], ['AA'], []), (0, ['D'], ['AH'], ['S', 'T'])]
 	s2=[(1, [], ['AA'], []), (0, ['D'], ['AH'], ['S', 'T'])]
 	return SyllabificationsRhyme(s1,s2);
-
 def tsr3():
 	s1= [(1, ['R'], ['AY'], []), (2, ['D'], ['AW'], ['T'])]
 	s2=	[(1, ['HH'], ['AY'], []), (2, ['D'], ['AW'], ['T'])]
 	return SyllabificationsRhyme(s1,s2);
-def tsr3r4():
+def tsr4():
 	s1=[(0, [], ['IH'], ['M']), (1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	s2=[(0, ['D'], ['IH'], []), (1, ['S', 'M'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	return SyllabificationsRhyme(s1,s2);
@@ -99,6 +75,26 @@ def tdr5():
 	s1=[(1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	s2=[(0, [], ['IH'], ['M']), (1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	return not SyllabificationsRhyme(s1,s2);
+
+
+def pairwise(iterable):#python website on iterables
+    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
+def groupHasAtLeastOneDifference(rg):
+	return any(SyllabificationsRhyme(pw[0],pw[1])for pw in pairwise(rg.proToSyllables.values()))
+def SyllabificationsRhyme(syllable1,syllable2): #assumes it's in the same rhymegroup
+	seenStressed=False
+	for s1,s2 in zip(syllable1[::-1],syllable2[::-1]):
+		if(s1[0]==1):#if it is the stressed
+			seenStressed=True
+			if s1[1]!=s2[1]:
+				return True;
+		if(seenStressed):
+			if s1[1]!=s2[1] and s1[2]==s2[2] and s1[3]==s2[3]:
+				return True;
+	return False
 
 class rhymeGroup:
 	def __init__(self,rhyme,rhymeToPros,proToWords,syllabification):

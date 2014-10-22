@@ -53,31 +53,6 @@ English = {
 	'HH Y', 'V Y', 'TH Y', 'M Y', 'S P Y', 'S K Y', 'G Y', 'HH W', '']
 	}
 
-def loadLanguage(filename) :	
-	'''This function loads up a language configuration file and returns
-	the configuration to be passed to the syllabify function.'''
-
-	L = { "consonants" : [], "vowels" : [], "onsets" : [] }
-	
-	f = open(filename, "r")
-	section = None
-	for line in f :
-		line = line.strip()
-		if line in ("[consonants]", "[vowels]", "[onsets]") :
-			section = line[1:-1]
-		elif section == None :
-			raise ValueError("File must start with a section header such as [consonants].")
-		elif not section in L :
-			raise ValueError("Invalid section: " + section)
-		else :
-			L[section].append(line)
-			
-	for section in "consonants", "vowels", "onsets" :
-		if len(L[section]) == 0 :
-			raise ValueError("File does not contain any consonants, vowels, or onsets.")
-			
-	return L
-
 def syllabify(word) :
 	'''Syllabifies the word, given a language configuration loaded with loadLanguage.
 	   word is either a string of phonemes from the CMU pronouncing dictionary set
