@@ -75,6 +75,10 @@ def tdr5():
 	s1=[(1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	s2=[(0, [], ['IH'], ['M']), (1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	return not SyllabificationsRhyme(s1,s2);
+def tdr6():
+	s1=[(2, ['M'], ['AA'], []), (0, ['N'], ['AH'], []), (1, ['S'], ['AE'], []), (0, ['K'], ['ER'], []), (2, [], ['AY'], ['D'])]
+	s2=[(2, ['P'], ['AA'], []), (0, ['L'], ['IH'], []), (1, ['S'], ['AE'], []), (0, ['K'], ['ER'], []), (2, [], ['AY'], ['D'])]
+	return not SyllabificationsRhyme(s1,s2)
 
 
 def pairwise(iterable):#python website on iterables
@@ -84,6 +88,7 @@ def pairwise(iterable):#python website on iterables
     return zip(a, b)
 def groupHasAtLeastOneDifference(rg):
 	return any(SyllabificationsRhyme(pw[0],pw[1])for pw in pairwise(rg.proToSyllables.values()))
+
 def SyllabificationsRhyme(syllable1,syllable2): #assumes it's in the same rhymegroup
 	seenStressed=False
 	for s1,s2 in zip(syllable1[::-1],syllable2[::-1]):
@@ -94,8 +99,9 @@ def SyllabificationsRhyme(syllable1,syllable2): #assumes it's in the same rhymeg
 		if(seenStressed):
 			if s1[1]!=s2[1] and s1[2]==s2[2] and s1[3]==s2[3]:
 				return True;
+			if s1[1]!=s2[1] or s1[2]!=s2[2] or s1[3]!=s2[3]:
+				return False;
 	return False
-
 class rhymeGroup:
 	def __init__(self,rhyme,rhymeToPros,proToWords,syllabification):
 		self.rhyme=rhyme
@@ -119,4 +125,3 @@ class rhymeGroup:
 		string+="words:"+str(self.words)
 		return string;
 #http://www.cs.colorado.edu/~jbg/
-#http://www.ling.upenn.edu/phonetics/p2tk/
