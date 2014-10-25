@@ -43,42 +43,7 @@ def getUntilStressed(phonemes):
 	return tuple(result);
 
 
-def tsr1():
-	s1=[(0, ['F', 'R'], ['AH'], []), (1, ['T'], ['ER'], []), (0, ['N'], ['IH'], []), (0, ['T'], ['IY'], [])]
-	s2=[(0, ['P'], ['AH'], []), (1, ['T'], ['ER'], []), (0, ['N'], ['IH'], []), (0, ['T'], ['IY'], [])]
-	return SyllabificationsRhyme(s1,s2);
-def tsr2():
-	s1=[(1, ['M'], ['AA'], []), (0, ['D'], ['AH'], ['S', 'T'])]
-	s2=[(1, [], ['AA'], []), (0, ['D'], ['AH'], ['S', 'T'])]
-	return SyllabificationsRhyme(s1,s2);
-def tsr3():
-	s1= [(1, ['R'], ['AY'], []), (2, ['D'], ['AW'], ['T'])]
-	s2=	[(1, ['HH'], ['AY'], []), (2, ['D'], ['AW'], ['T'])]
-	return SyllabificationsRhyme(s1,s2);
-def tsr4():
-	s1=[(0, [], ['IH'], ['M']), (1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
-	s2=[(0, ['D'], ['IH'], []), (1, ['S', 'M'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
-	return SyllabificationsRhyme(s1,s2);
-def tdr1():
-	s1=[(1, ['S'], ['EH'], ['L', 'F']), (1, ['D'], ['EH'], []), (0, ['P', 'R'], ['AH'], []), (2, ['K'], ['EY'], []), (0, ['T'], ['IH'], ['NG'])]
-	s2=[(1, ['D'], ['EH'], []), (0, ['P', 'R'], ['AH'], []), (2, ['K'], ['EY'], []), (0, ['T'], ['IH'], ['NG'])]
-	return not SyllabificationsRhyme(s1,s2);
-def tdr2():
-	s1=[(0, ['D'], ['IH'], []), (1, ['F'], ['EH'], ['N', 'S'])]
-	s2=[(1, ['F'], ['EH'], ['N', 'S'])]
-	return not SyllabificationsRhyme(s1,s2);
-def tdr4():
-	s1=[(0, ['R'], ['IY'], []), (1, ['P', 'R'], ['IH'], ['N', 'T'])]
-	s2=[(0, [], ['IH'], ['M']), (1, ['P', 'R'], ['IH'], ['N', 'T'])]
-	return not SyllabificationsRhyme(s1,s2);
-def tdr5():
-	s1=[(1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
-	s2=[(0, [], ['IH'], ['M']), (1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
-	return not SyllabificationsRhyme(s1,s2);
-def tdr6():
-	s1=[(2, ['M'], ['AA'], []), (0, ['N'], ['AH'], []), (1, ['S'], ['AE'], []), (0, ['K'], ['ER'], []), (2, [], ['AY'], ['D'])]
-	s2=[(2, ['P'], ['AA'], []), (0, ['L'], ['IH'], []), (1, ['S'], ['AE'], []), (0, ['K'], ['ER'], []), (2, [], ['AY'], ['D'])]
-	return not SyllabificationsRhyme(s1,s2)
+
 
 
 def pairwise(iterable):#python website on iterables
@@ -124,4 +89,50 @@ class rhymeGroup:
 			string=string+"\t"+str(self.proToSyllables[p])+"\n"
 		string+="words:"+str(self.words)
 		return string;
-#http://www.cs.colorado.edu/~jbg/
+
+
+#Unit tests for checking if syllabifications rhyme
+def allTests():
+	allTests=[tsr1(),tsr2(),
+	tsr3(),tsr4(),
+	tdr1(),tdr2(),
+	tdr3(),tdr4(),
+	tdr5()]
+	return all(x==True for x in allTests)
+def tsr1():
+	s1=[(0, ['F', 'R'], ['AH'], []), (1, ['T'], ['ER'], []), (0, ['N'], ['IH'], []), (0, ['T'], ['IY'], [])]
+	s2=[(0, ['P'], ['AH'], []), (1, ['T'], ['ER'], []), (0, ['N'], ['IH'], []), (0, ['T'], ['IY'], [])]
+	return SyllabificationsRhyme(s1,s2);
+def tsr2():
+	s1=[(1, ['M'], ['AA'], []), (0, ['D'], ['AH'], ['S', 'T'])]
+	s2=[(1, [], ['AA'], []), (0, ['D'], ['AH'], ['S', 'T'])]
+	return SyllabificationsRhyme(s1,s2);
+def tsr3():
+	s1= [(1, ['R'], ['AY'], []), (2, ['D'], ['AW'], ['T'])]
+	s2=	[(1, ['HH'], ['AY'], []), (2, ['D'], ['AW'], ['T'])]
+	return SyllabificationsRhyme(s1,s2);
+def tsr4():
+	s1=[(0, [], ['IH'], ['M']), (1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
+	s2=[(0, ['D'], ['IH'], []), (1, ['S', 'M'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
+	return SyllabificationsRhyme(s1,s2);
+def tdr1():
+	s1=[(1, ['S'], ['EH'], ['L', 'F']), (1, ['D'], ['EH'], []), (0, ['P', 'R'], ['AH'], []), (2, ['K'], ['EY'], []), (0, ['T'], ['IH'], ['NG'])]
+	s2=[(1, ['D'], ['EH'], []), (0, ['P', 'R'], ['AH'], []), (2, ['K'], ['EY'], []), (0, ['T'], ['IH'], ['NG'])]
+	return not SyllabificationsRhyme(s1,s2);
+def tdr2():
+	s1=[(0, ['D'], ['IH'], []), (1, ['F'], ['EH'], ['N', 'S'])]
+	s2=[(1, ['F'], ['EH'], ['N', 'S'])]
+	return not SyllabificationsRhyme(s1,s2);
+def tdr3():
+	s1=[(2, ['M'], ['AA'], []), (0, ['N'], ['AH'], []), (1, ['S'], ['AE'], []), (0, ['K'], ['ER'], []), (2, [], ['AY'], ['D'])]
+	s2=[(2, ['P'], ['AA'], []), (0, ['L'], ['IH'], []), (1, ['S'], ['AE'], []), (0, ['K'], ['ER'], []), (2, [], ['AY'], ['D'])]
+	return not SyllabificationsRhyme(s1,s2)
+def tdr4():
+	s1=[(0, ['R'], ['IY'], []), (1, ['P', 'R'], ['IH'], ['N', 'T'])]
+	s2=[(0, [], ['IH'], ['M']), (1, ['P', 'R'], ['IH'], ['N', 'T'])]
+	return not SyllabificationsRhyme(s1,s2);
+def tdr5():
+	s1=[(1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
+	s2=[(0, [], ['IH'], ['M']), (1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
+	return not SyllabificationsRhyme(s1,s2);
+
