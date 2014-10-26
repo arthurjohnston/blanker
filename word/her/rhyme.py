@@ -4,8 +4,7 @@ import syllabifier
 #from nltk.corpus import cmudict
 #cmu=cmudict.dict()
 #rhymeToPro,pronunciationToWords=rhyme.getDictionariesNeededForRhyming(cmu)
-#realRhymes=dict((k,v) for k,v in rhymeToPro.items() if len(v)>1)
-#rgs=[rhyme.rhymeGroup(r,realRhymes,pronunciationToWords,syllabifier.syllabify) for r in realRhymes]
+#rgs=[rhyme.rhymeGroup(r,rhymeToPro,pronunciationToWords,syllabifier.syllabify) for r in rhymeToPro]
 #multi=[r for r in rgs if rhyme.groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation())]
 #multi=sorted(multi,key= lambda x: len(x.words))
 
@@ -42,14 +41,19 @@ def getUntilStressed(phonemes):
 
 
 def groupHasAtLeastOneDifference(rg):
-	return any(SyllabificationsRhyme(pair[0],pair[1])for pair in itertools.combinations(rg.proToSyllables.values(),2))
-
+	first= any(SyllabificationsRhyme(pair[0],pair[1])for pair in itertools.combinations(rg.proToSyllables.values(),2))
+	second=any(SyllabificationsRhyme(pair[0],pair[1])for pair in itertools.combinations(list(rg.proToSyllables.values())[::-1],2))
+	if(first!=second):
+		print(rg)
+	return first and second
+	
+	return first
 def SyllabificationsRhyme(syllable1,syllable2): #assumes it's in the same rhymegroup
 	seenStressed=False
 	for s1,s2 in zip(syllable1[::-1],syllable2[::-1]):
-		if(s1[0]==1):#if it is the stressed
+		if(s1[0]==1):#if it is a stressed
 			seenStressed=True
-			if s1[1]!=s2[1]:
+			if s1[1]!=s2[1] and s1[2]==s2[2] and s1[3]==s2[3]:
 				return True;
 		if(seenStressed):
 			if s1[1]!=s2[1] and s1[2]==s2[2] and s1[3]==s2[3]:
@@ -83,17 +87,21 @@ class rhymeGroup:
 
 # If this module was run directly, print the total number of 
 # rhyme groups in english
-if __name__ == "__main__" :
+def fullTest():
 	cmu=cmudict.dict();
 	print("The cmudict has "+str(len(cmu))+" items")
 	rhymeToPros,pronunciationToWords=getDictionariesNeededForRhyming(cmu);
 	print("rhymeToPros has "+str(len(rhymeToPros))+" items")
+	print("rhymeToPros values has "+str(sum([len(r) for r in rhymeToPros.values()])))
 	print("pronunciationToWords has "+str(len(pronunciationToWords))+" items")
 	rgs=[rhymeGroup(r,rhymeToPros,pronunciationToWords,syllabifier.syllabify) for r in rhymeToPros]
 	print("rhymegroups has "+str(len(rgs))+" items")
-	multi=[r for r in rgs if groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation())]
-	print("English has "+ str(len(multi))+" rhyme groups")
-
+	print("rgs has "+str(sum([len(r.proToSyllables.values()) for r in rgs]))+" syllabifications")
+	multi=[r for r in rgs if (groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation()))]
+	print("English has "+ str(len(multi))+" rhyme groups\n")
+	return multi
+if __name__ == "__main__":
+	fullTest()
 #tests for checking if syllabifications rhyme
 def allTests():
 	allTests=[testSyllablesRhyme1(),testSyllablesRhyme2(),
@@ -137,5 +145,10 @@ def testDontRhyme4():
 def testDontRhyme5():
 	s1=[(1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	s2=[(0, [], ['IH'], ['M']), (1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
+	return not SyllabificationsRhyme(s1,s2);
+def testDontRhyme6():
+
+	s1=[(1, ['F', 'L'], ['AY'], ['T']), (1, ['S'], ['EY'], ['F']), (0, ['T'], ['IY'], [])]
+	s2=[(2, ['B'], ['AY'], []), (0, [], ['OW'], []), (1, ['S'], ['EY'], ['F']), (0, ['T'], ['IY'], [])]
 	return not SyllabificationsRhyme(s1,s2);
 
