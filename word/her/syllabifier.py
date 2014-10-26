@@ -1,8 +1,10 @@
 # This is the P2TK automated syllabifier. Given a string of phonemes,
 # it automatically divides the phonemes into syllables.
-#
-# By Joshua Tauberer, based on code originally written by Charles Yang.
-#
+# 
+# This code was written by Joshua Tauberer, based on code originally written by Charles Yang.
+#  under the MIT license 
+# original source code at  http://www.ling.upenn.edu/phonetics/p2tk/
+# 
 # The syllabifier requires a language configuration which specifies
 # the set of phonemes which are consonants and vowels (syllable nuclei),
 # as well as the set of permissible onsets.
@@ -108,7 +110,7 @@ def syllabify(word) :
 			if len(syllables) > 0 :
 				syllables[-1][3].extend(coda)
 			
-			# Make a new syllable out of the onset and nucleus.
+			# Make a 	new syllable out of the onset and nucleus.
 			syllables.append( (stress, onset, [phoneme], []) )
 				
 			# At this point we've processed the internuclei list.
@@ -130,30 +132,3 @@ def syllabify(word) :
 
 	return syllables
 
-def stringify(syllables) :
-	'''This function takes a syllabification returned by syllabify and
-	   turns it into a string, with phonemes spearated by spaces and
-	   syllables spearated by periods.'''
-	ret = []
-	for syl in syllables :
-		stress, onset, nucleus, coda = syl
-		if stress != None and len(nucleus) != 0 :
-			nucleus[0] += str(stress)
-		ret.append(" ".join(onset + nucleus + coda))
-	return " . ".join(ret)
-
-# If this module was run directly, syllabify the words on standard input
-# into standard output. Hashed lines are printed back untouched.
-if __name__ == "__main__" :
-	import sys
-	if len(sys.argv) != 2 :
-		print("Usage: python syllabifier.py english.cfg < textfile.txt > outfile.txt")
-	else :
-		L = loadLanguage(sys.argv[1])
-		for line in sys.stdin :
-			if line[0] == "#" :
-				sys.stdout.write(line)
-				continue
-			line = line.strip()
-			s = stringify(syllabify(L, line))
-			sys.stdout.write(s + "\n")

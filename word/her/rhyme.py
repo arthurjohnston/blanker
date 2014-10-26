@@ -1,13 +1,11 @@
 from nltk.corpus import cmudict
-from itertools import *
-#import imp
-#rhyme=imp.load_source('rhyme','C:/Sites/blanker/word/her/rhyme.py')
+import itertools 
+import syllabifier  
 #from nltk.corpus import cmudict
 #cmu=cmudict.dict()
 #rhymeToPro,pronunciationToWords=rhyme.getDictionariesNeededForRhyming(cmu)
 #realRhymes=dict((k,v) for k,v in rhymeToPro.items() if len(v)>1)
-#s=imp.load_source('syllabifier','C:/Sites/blanker/word/her/syllabifier.py')
-#rgs=[rhyme.rhymeGroup(r,realRhymes,pronunciationToWords,s.syllabify) for r in realRhymes]
+#rgs=[rhyme.rhymeGroup(r,realRhymes,pronunciationToWords,syllabifier.syllabify) for r in realRhymes]
 #multi=[r for r in rgs if rhyme.groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation())]
 #multi=sorted(multi,key= lambda x: len(x.words))
 
@@ -43,16 +41,8 @@ def getUntilStressed(phonemes):
 	return tuple(result);
 
 
-
-
-
-def pairwise(iterable):#python website on iterables
-    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
 def groupHasAtLeastOneDifference(rg):
-	return any(SyllabificationsRhyme(pw[0],pw[1])for pw in pairwise(rg.proToSyllables.values()))
+	return any(SyllabificationsRhyme(pair[0],pair[1])for pair in itertools.combinations(rg.proToSyllables.values(),2))
 
 def SyllabificationsRhyme(syllable1,syllable2): #assumes it's in the same rhymegroup
 	seenStressed=False
@@ -91,47 +81,60 @@ class rhymeGroup:
 		return string;
 
 
-#Unit tests for checking if syllabifications rhyme
+# If this module was run directly, print the total number of 
+# rhyme groups in english
+if __name__ == "__main__" :
+	cmu=cmudict.dict();
+	print("The cmudict has "+str(len(cmu))+" items")
+	rhymeToPros,pronunciationToWords=getDictionariesNeededForRhyming(cmu);
+	print("rhymeToPros has "+str(len(rhymeToPros))+" items")
+	print("pronunciationToWords has "+str(len(pronunciationToWords))+" items")
+	rgs=[rhymeGroup(r,rhymeToPros,pronunciationToWords,syllabifier.syllabify) for r in rhymeToPros]
+	print("rhymegroups has "+str(len(rgs))+" items")
+	multi=[r for r in rgs if groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation())]
+	print("English has "+ str(len(multi))+" rhyme groups")
+
+#tests for checking if syllabifications rhyme
 def allTests():
-	allTests=[tsr1(),tsr2(),
-	tsr3(),tsr4(),
-	tdr1(),tdr2(),
-	tdr3(),tdr4(),
-	tdr5()]
+	allTests=[testSyllablesRhyme1(),testSyllablesRhyme2(),
+	testSyllablesRhyme3(),testSyllablesRhyme4(),
+	testDontRhyme1(),testDontRhyme2(),
+	testDontRhyme3(),testDontRhyme4(),
+	testDontRhyme5()]
 	return all(x==True for x in allTests)
-def tsr1():
+def testSyllablesRhyme1():
 	s1=[(0, ['F', 'R'], ['AH'], []), (1, ['T'], ['ER'], []), (0, ['N'], ['IH'], []), (0, ['T'], ['IY'], [])]
 	s2=[(0, ['P'], ['AH'], []), (1, ['T'], ['ER'], []), (0, ['N'], ['IH'], []), (0, ['T'], ['IY'], [])]
 	return SyllabificationsRhyme(s1,s2);
-def tsr2():
+def testSyllablesRhyme2():
 	s1=[(1, ['M'], ['AA'], []), (0, ['D'], ['AH'], ['S', 'T'])]
 	s2=[(1, [], ['AA'], []), (0, ['D'], ['AH'], ['S', 'T'])]
 	return SyllabificationsRhyme(s1,s2);
-def tsr3():
+def testSyllablesRhyme3():
 	s1= [(1, ['R'], ['AY'], []), (2, ['D'], ['AW'], ['T'])]
 	s2=	[(1, ['HH'], ['AY'], []), (2, ['D'], ['AW'], ['T'])]
 	return SyllabificationsRhyme(s1,s2);
-def tsr4():
+def testSyllablesRhyme4():
 	s1=[(0, [], ['IH'], ['M']), (1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	s2=[(0, ['D'], ['IH'], []), (1, ['S', 'M'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	return SyllabificationsRhyme(s1,s2);
-def tdr1():
+def testDontRhyme1():
 	s1=[(1, ['S'], ['EH'], ['L', 'F']), (1, ['D'], ['EH'], []), (0, ['P', 'R'], ['AH'], []), (2, ['K'], ['EY'], []), (0, ['T'], ['IH'], ['NG'])]
 	s2=[(1, ['D'], ['EH'], []), (0, ['P', 'R'], ['AH'], []), (2, ['K'], ['EY'], []), (0, ['T'], ['IH'], ['NG'])]
 	return not SyllabificationsRhyme(s1,s2);
-def tdr2():
+def testDontRhyme2():
 	s1=[(0, ['D'], ['IH'], []), (1, ['F'], ['EH'], ['N', 'S'])]
 	s2=[(1, ['F'], ['EH'], ['N', 'S'])]
 	return not SyllabificationsRhyme(s1,s2);
-def tdr3():
+def testDontRhyme3():
 	s1=[(2, ['M'], ['AA'], []), (0, ['N'], ['AH'], []), (1, ['S'], ['AE'], []), (0, ['K'], ['ER'], []), (2, [], ['AY'], ['D'])]
 	s2=[(2, ['P'], ['AA'], []), (0, ['L'], ['IH'], []), (1, ['S'], ['AE'], []), (0, ['K'], ['ER'], []), (2, [], ['AY'], ['D'])]
 	return not SyllabificationsRhyme(s1,s2)
-def tdr4():
+def testDontRhyme4():
 	s1=[(0, ['R'], ['IY'], []), (1, ['P', 'R'], ['IH'], ['N', 'T'])]
 	s2=[(0, [], ['IH'], ['M']), (1, ['P', 'R'], ['IH'], ['N', 'T'])]
 	return not SyllabificationsRhyme(s1,s2);
-def tdr5():
+def testDontRhyme5():
 	s1=[(1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	s2=[(0, [], ['IH'], ['M']), (1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	return not SyllabificationsRhyme(s1,s2);
