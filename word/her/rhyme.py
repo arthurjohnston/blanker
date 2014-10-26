@@ -89,14 +89,10 @@ class rhymeGroup:
 # rhyme groups in english
 def fullTest():
 	cmu=cmudict.dict();
-	print("The cmudict has "+str(len(cmu))+" items")
 	rhymeToPros,pronunciationToWords=getDictionariesNeededForRhyming(cmu);
 	print("rhymeToPros has "+str(len(rhymeToPros))+" items")
-	print("rhymeToPros values has "+str(sum([len(r) for r in rhymeToPros.values()])))
 	print("pronunciationToWords has "+str(len(pronunciationToWords))+" items")
 	rgs=[rhymeGroup(r,rhymeToPros,pronunciationToWords,syllabifier.syllabify) for r in rhymeToPros]
-	print("rhymegroups has "+str(len(rgs))+" items")
-	print("rgs has "+str(sum([len(r.proToSyllables.values()) for r in rgs]))+" syllabifications")
 	multi=[r for r in rgs if (groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation()))]
 	print("English has "+ str(len(multi))+" rhyme groups\n")
 	return multi
