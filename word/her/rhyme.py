@@ -53,8 +53,6 @@ def SyllabificationsRhyme(syllable1,syllable2): #assumes it's in the same rhymeg
 	for s1,s2 in zip(syllable1[::-1],syllable2[::-1]):
 		if(s1[0]==1):#if it is a stressed
 			seenStressed=True
-			if s1[1]!=s2[1] and s1[2]==s2[2] and s1[3]==s2[3]:
-				return True;
 		if(seenStressed):
 			if s1[1]!=s2[1] and s1[2]==s2[2] and s1[3]==s2[3]:
 				return True;
@@ -85,9 +83,7 @@ class rhymeGroup:
 		return string;
 
 
-# If this module was run directly, print the total number of 
-# rhyme groups in english
-def fullTest():
+def getMulti():
 	cmu=cmudict.dict();
 	rhymeToPros,pronunciationToWords=getDictionariesNeededForRhyming(cmu);
 	print("rhymeToPros has "+str(len(rhymeToPros))+" items")
@@ -96,8 +92,10 @@ def fullTest():
 	multi=[r for r in rgs if (groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation()))]
 	print("English has "+ str(len(multi))+" rhyme groups\n")
 	return multi
+# If this module was run directly, print the total number of 
+# rhyme groups in english
 if __name__ == "__main__":
-	fullTest()
+	getMulti()
 #tests for checking if syllabifications rhyme
 def allTests():
 	allTests=[testSyllablesRhyme1(),testSyllablesRhyme2(),
