@@ -108,7 +108,7 @@ def allTests():
 	testSyllablesRhyme3(),testSyllablesRhyme4(),
 	testDontRhyme1(),testDontRhyme2(),
 	testDontRhyme3(),testDontRhyme4(),
-	testDontRhyme5()]
+	testDontRhyme5(),testDontRhyme6()]
 	return all(x==True for x in allTests)
 def testSyllablesRhyme1():
 	s1=[(0, ['F', 'R'], ['AH'], []), (1, ['T'], ['ER'], []), (0, ['N'], ['IH'], []), (0, ['T'], ['IY'], [])]
@@ -147,7 +147,6 @@ def testDontRhyme5():
 	s2=[(0, [], ['IH'], ['M']), (1, ['P'], ['AE'], []), (0, ['N'], ['AH'], ['L', 'D'])]
 	return not SyllabificationsRhyme(s1,s2);
 def testDontRhyme6():
-
 	s1=[(1, ['F', 'L'], ['AY'], ['T']), (1, ['S'], ['EY'], ['F']), (0, ['T'], ['IY'], [])]
 	s2=[(2, ['B'], ['AY'], []), (0, [], ['OW'], []), (1, ['S'], ['EY'], ['F']), (0, ['T'], ['IY'], [])]
 	return not SyllabificationsRhyme(s1,s2);
