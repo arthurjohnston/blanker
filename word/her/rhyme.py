@@ -41,13 +41,8 @@ def getUntilStressed(phonemes):
 
 
 def groupHasAtLeastOneDifference(rg):
-	first= any(SyllabificationsRhyme(pair[0],pair[1])for pair in itertools.combinations(rg.proToSyllables.values(),2))
-	second=any(SyllabificationsRhyme(pair[0],pair[1])for pair in itertools.combinations(list(rg.proToSyllables.values())[::-1],2))
-	if(first!=second):
-		print(rg)
-	return first and second
-	
-	return first
+	return any(SyllabificationsRhyme(pair[0],pair[1])for pair in itertools.combinations(rg.proToSyllables.values(),2))
+
 def SyllabificationsRhyme(syllable1,syllable2): #assumes it's in the same rhymegroup
 	seenStressed=False
 	for s1,s2 in zip(syllable1[::-1],syllable2[::-1]):
@@ -92,6 +87,7 @@ def getMulti():
 	multi=[r for r in rgs if (groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation()))]
 	print("English has "+ str(len(multi))+" rhyme groups\n")
 	return multi
+
 # If this module was run directly, print the total number of 
 # rhyme groups in english
 if __name__ == "__main__":
