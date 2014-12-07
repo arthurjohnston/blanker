@@ -85,14 +85,14 @@ def getMulti():
 	print("pronunciationToWords has "+str(len(pronunciationToWords))+" items")
 	rgs=[rhymeGroup(r,rhymeToPros,pronunciationToWords,syllabifier.syllabify) for r in rhymeToPros]
 	multi=[r for r in rgs if (groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation()))]
-	print("English has "+ str(len(multi))+" rhyme groups\n")
+	print("English has "+ str(len(multi))+" good rhyme groups\n")
 	return multi
 
 # If this module was run directly, print the total number of 
 # rhyme groups in english
 if __name__ == "__main__":
 	getMulti()
-#tests for checking if syllabifications rhyme
+#tests for checking if 2 syllabifications rhyme
 def allTests():
 	allTests=[testSyllablesRhyme1(),testSyllablesRhyme2(),
 	testSyllablesRhyme3(),testSyllablesRhyme4(),
