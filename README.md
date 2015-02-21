@@ -1,4 +1,4 @@
 Rhyme group generator
 =======
 
-This code will generate all the rhyme groups in the English language using the cmudict. A rhyme group is a group of words in which everything after the stressed syllables is the same. 
+This code will generate all the rhymes in the English language using the cmudict. If the rhyme.py is directly run it will print out all the rhymes in the English language. A full writeup, including a strict definition of what consitutes a rhyme, can be found [here](https://medium.com/@the_ajohnston/how-many-rhymes-are-there-in-english-9ab81029ebdf)
