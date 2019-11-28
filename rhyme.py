@@ -8,6 +8,9 @@ import syllabifier
 #multi=[r for r in rgs if rhyme.groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation())]
 #multi=sorted(multi,key= lambda x: len(x.words))
 
+import argparse
+import sys
+
 def getDictionariesNeededForRhyming(wordToPro=None):
 	if wordToPro is None:
 		wordToPro=cmudict.dict();
@@ -77,6 +80,14 @@ class rhymeGroup:
 		string+="words:"+str(self.words)
 		return string;
 
+def getRhymeGroups():
+	cmu=cmudict.dict();
+	rhymeToPros,pronunciationToWords=getDictionariesNeededForRhyming(cmu);
+	print("rhymeToPros has "+str(len(rhymeToPros))+" items")
+	print("pronunciationToWords has "+str(len(pronunciationToWords))+" items")
+	rgs=[rhymeGroup(r,rhymeToPros,pronunciationToWords,syllabifier.syllabify) for r in rhymeToPros]
+
+	return rgs
 
 def getMulti():
 	cmu=cmudict.dict();
@@ -86,12 +97,43 @@ def getMulti():
 	rgs=[rhymeGroup(r,rhymeToPros,pronunciationToWords,syllabifier.syllabify) for r in rhymeToPros]
 	multi=[r for r in rgs if (groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation()))]
 	print("English has "+ str(len(multi))+" good rhyme groups\n")
+
 	return multi
+
+def main():
+	parser = argparse.ArgumentParser(description='Generates all the rhymes in the English language')
+	parser.add_argument('--show', choices=['rhyme-groups', 'good-rhyme-groups'],
+						help='Choose to output all rhyme groups or good rhyme-groups')
+	parser.add_argument('--output', type=str,
+						help='The output file path (Leave empty to print to stdout)')
+	
+	args = parser.parse_args()
+	
+	if args.show == "rhyme-groups":
+		rhyme_groups = getRhymeGroups()
+	elif args.show == "good-rhyme-groups":
+		rhyme_groups = getMulti()
+	elif args.show == None:
+		getMulti()
+		return
+
+	# Print to stdout if a file path is not provided
+	if args.output is not None:
+		fh = open(args.output, 'w')
+		print("Writing output to {}".format(args.output))
+	else:
+		fh = sys.stdout
+		
+	rhyme_groups.sort(key=lambda x: len(x.words), reverse=True)
+	for rhyme_group in rhyme_groups:
+		print(rhyme_group.words, file=fh)
+		
 
 # If this module was run directly, print the total number of 
 # rhyme groups in english
 if __name__ == "__main__":
-	getMulti()
+	main()
+
 #tests for checking if 2 syllabifications rhyme
 def allTests():
 	allTests=[testSyllablesRhyme1(),testSyllablesRhyme2(),
