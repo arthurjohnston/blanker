@@ -10,6 +10,7 @@ import syllabifier
 
 import argparse
 import sys
+from json import dumps, JSONEncoder
 
 def getDictionariesNeededForRhyming(wordToPro=None):
 	if wordToPro is None:
@@ -100,12 +101,53 @@ def getMulti():
 
 	return multi
 
+def output_to_file(fh, format, rhyme_groups, count=False):
+	if format == 'json':
+		output_json(fh, rhyme_groups, count)
+	else:
+		output_tab(fh, rhyme_groups, count)
+
+
+def output_json(fh, rhyme_groups, count=False):
+	print('{ [ ', file=fh)
+
+	for rhyme_group in rhyme_groups:
+		output_line = "\t{\n"
+
+		if count:
+			output_line += "\tcount: " +  str(len(rhyme_group.words)) + ", \n"
+
+		output_line += "\twords: " + dumps(list(rhyme_group.words)) 
+		output_line += "\n\t}"
+
+		print(output_line, file=fh)
+
+	print('] }', file=fh)
+	
+	fh.close()
+
+def output_tab(fh, rhyme_groups, count=False):
+	for rhyme_group in rhyme_groups:
+		output_line = ''
+		if count:
+			output_line = str(len(rhyme_group.words)) + "\t"
+		
+		output_line += "\t".join(rhyme_group.words)
+		print(output_line, file=fh)
+
+	fh.close()
+
+
 def main():
 	parser = argparse.ArgumentParser(description='Generates all the rhymes in the English language')
 	parser.add_argument('--show', choices=['rhyme-groups', 'good-rhyme-groups'],
 						help='Choose to output all rhyme groups or good rhyme-groups')
 	parser.add_argument('--output', type=str,
 						help='The output file path (Leave empty to print to stdout)')
+	parser.add_argument('--format', choices=['json', 'tab'], default="json",
+						help='The output format to use')
+	parser.add_argument('--count', action='store_true',
+						help='Include the word count for each rhyme group')
 	
 	args = parser.parse_args()
 	
@@ -125,9 +167,7 @@ def main():
 		fh = sys.stdout
 		
 	rhyme_groups.sort(key=lambda x: len(x.words), reverse=True)
-	for rhyme_group in rhyme_groups:
-		print(rhyme_group.words, file=fh)
-		
+	output_to_file(fh, args.format, rhyme_groups, args.count)
 
 # If this module was run directly, print the total number of 
 # rhyme groups in english
