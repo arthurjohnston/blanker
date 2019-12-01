@@ -9,14 +9,18 @@ Getting Started
 Clone this repository and change directory to the new folder that was created
 
 Create a virtual environment and activate the environment
+
     virtualenv .venv
     source .venv/bin/activate
 
 Install the required python packages
+
     pip install -r requirements.txt
 
 Download the nltk data
+
     python -m nltk.downloader all
 
 Execute rhyme.py
+
     python rhyme.py -h
