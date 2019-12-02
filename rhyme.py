@@ -8,6 +8,10 @@ import syllabifier
 #multi=[r for r in rgs if rhyme.groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation())]
 #multi=sorted(multi,key= lambda x: len(x.words))
 
+import argparse
+import sys
+from json import dumps, JSONEncoder
+
 def getDictionariesNeededForRhyming(wordToPro=None):
 	if wordToPro is None:
 		wordToPro=cmudict.dict();
@@ -77,6 +81,14 @@ class rhymeGroup:
 		string+="words:"+str(self.words)
 		return string;
 
+def getRhymeGroups():
+	cmu=cmudict.dict();
+	rhymeToPros,pronunciationToWords=getDictionariesNeededForRhyming(cmu);
+	print("rhymeToPros has "+str(len(rhymeToPros))+" items")
+	print("pronunciationToWords has "+str(len(pronunciationToWords))+" items")
+	rgs=[rhymeGroup(r,rhymeToPros,pronunciationToWords,syllabifier.syllabify) for r in rhymeToPros]
+
+	return rgs
 
 def getMulti():
 	cmu=cmudict.dict();
@@ -86,12 +98,82 @@ def getMulti():
 	rgs=[rhymeGroup(r,rhymeToPros,pronunciationToWords,syllabifier.syllabify) for r in rhymeToPros]
 	multi=[r for r in rgs if (groupHasAtLeastOneDifference(r) and not(r.HasOneWord() or r.HasOnePronunciation()))]
 	print("English has "+ str(len(multi))+" good rhyme groups\n")
+
 	return multi
+
+def output_to_file(fh, format, rhyme_groups, count=False):
+	if format == 'json':
+		output_json(fh, rhyme_groups, count)
+	else:
+		output_tab(fh, rhyme_groups, count)
+
+
+def output_json(fh, rhyme_groups, count=False):
+	print('{ [ ', file=fh)
+
+	for rhyme_group in rhyme_groups:
+		output_line = "\t{\n"
+
+		if count:
+			output_line += "\tcount: " +  str(len(rhyme_group.words)) + ", \n"
+
+		output_line += "\twords: " + dumps(list(rhyme_group.words)) 
+		output_line += "\n\t}"
+
+		print(output_line, file=fh)
+
+	print('] }', file=fh)
+	
+	fh.close()
+
+def output_tab(fh, rhyme_groups, count=False):
+	for rhyme_group in rhyme_groups:
+		output_line = ''
+		if count:
+			output_line = str(len(rhyme_group.words)) + "\t"
+		
+		output_line += "\t".join(rhyme_group.words)
+		print(output_line, file=fh)
+
+	fh.close()
+
+
+def main():
+	parser = argparse.ArgumentParser(description='Generates all the rhymes in the English language')
+	parser.add_argument('--show', choices=['rhyme-groups', 'good-rhyme-groups'],
+						help='Choose to output all rhyme groups or good rhyme-groups')
+	parser.add_argument('--output', type=str,
+						help='The output file path (Leave empty to print to stdout)')
+	parser.add_argument('--format', choices=['json', 'tab'], default="json",
+						help='The output format to use')
+	parser.add_argument('--count', action='store_true',
+						help='Include the word count for each rhyme group')
+	
+	args = parser.parse_args()
+	
+	if args.show == "rhyme-groups":
+		rhyme_groups = getRhymeGroups()
+	elif args.show == "good-rhyme-groups":
+		rhyme_groups = getMulti()
+	elif args.show == None:
+		getMulti()
+		return
+
+	# Print to stdout if a file path is not provided
+	if args.output is not None:
+		fh = open(args.output, 'w')
+		print("Writing output to {}".format(args.output))
+	else:
+		fh = sys.stdout
+		
+	rhyme_groups.sort(key=lambda x: len(x.words), reverse=True)
+	output_to_file(fh, args.format, rhyme_groups, args.count)
 
 # If this module was run directly, print the total number of 
 # rhyme groups in english
 if __name__ == "__main__":
-	getMulti()
+	main()
+
 #tests for checking if 2 syllabifications rhyme
 def allTests():
 	allTests=[testSyllablesRhyme1(),testSyllablesRhyme2(),
